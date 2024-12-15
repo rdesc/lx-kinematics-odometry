@@ -1,4 +1,5 @@
 from typing import Tuple
+from typing import Tuple
 
 import numpy as np
 
@@ -14,9 +15,9 @@ def delta_phi(ticks: int, prev_ticks: int, resolution: int) -> Tuple[float, floa
         ticks: current number of ticks.
     """
 
-    # TODO: these are random values, you have to implement your own solution in here
-    ticks = prev_ticks + int(np.random.uniform(0, 10))
-    dphi = np.random.random()
+    delta_ticks = ticks - prev_ticks
+    dphi = delta_ticks * 2 * np.pi / resolution 
+
     # ---
     return dphi, ticks
 
@@ -51,8 +52,14 @@ def estimate_pose(
     """
 
     # These are random values, replace with your own
-    x_curr = np.random.random()
-    y_curr = np.random.random()
-    theta_curr = np.random.random()
+
+    dr = R * delta_phi_right
+    dl = R * delta_phi_left
+    dA = (dr + dl) / 2
+    dtheta = (dr - dl) / (2 * baseline)
+    
+    theta_curr = theta_prev + dtheta 
+    x_curr = x_prev + dA * np.cos(theta_curr)
+    y_curr = y_prev + dA * np.sin(theta_curr)
     # ---
     return x_curr, y_curr, theta_curr
